@@ -317,7 +317,7 @@ $(document).ready(async function () {
     });
   }
   function renderListAll(data) {
-    var listAll= $("#listAll");
+    var listAll = $("#listAll");
     listAll.empty();
     $.each(data.result, (k, v) => {
       var html = `
@@ -325,7 +325,6 @@ $(document).ready(async function () {
       if (v.is_interview == "Y") {
         html += "color-grey";
       }
-
       html += `">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="text-danger font-weight-bold">${v.queue_number}</h5>
@@ -337,7 +336,7 @@ $(document).ready(async function () {
           </div>
           <div class="d-flex w-100 justify-content-between">
             <div class="btn-group">
-              <button class="btn btn-success" data-action="callQueue" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
+              <button class="btn btn-success" data-action="callQueueAll" data-number="${v.queue_number}" data-queue-id="${v.queue_id}">เรียกคิว</button>
             </div>
           </div>
         </li>
@@ -759,9 +758,7 @@ $(document).ready(async function () {
 
       if (roomId) {
         var idx = _.findIndex(ROOMS, { room_id: +roomId });
-
         var roomNumber;
-
         if (idx > -1) {
           roomNumber = ROOMS[idx].room_number;
         }
@@ -777,6 +774,41 @@ $(document).ready(async function () {
       }
     }
   });
+  // call queue
+  $("body").on(
+    "click",
+    'button[data-action="callQueueAll"]',
+    async function () {
+      if (IS_OFFLINE) {
+        Swal.fire({
+          type: "error",
+          title: "Oops...",
+          text: "ไม่สามารถเชื่อมต่อ Notify Server ได้",
+        });
+      } else {
+        var queueNumber = $(this).data("number");
+        var queueId = $(this).data("queue-id");
+        var roomId = $("#slRooms").val();
+        
+        if (roomId) {
+          var idx = _.findIndex(ROOMS, { room_id: +roomId });
+          var roomNumber;
+          if (idx > -1) {
+            roomNumber = ROOMS[idx].room_number;
+          }
+          // console.log(queueNumber, +roomId, roomNumber, +queueId);
+          await callQueue(queueNumber, +roomId, roomNumber, +queueId);
+          // setActiveList(queueId, "N");
+        } else {
+          Swal.fire({
+            type: "error",
+            title: "Oops...",
+            text: "กรุณาระบุห้องตรวจ",
+          });
+        }
+      }
+    }
+  );
 
   // call queue interview
   $("body").on(
