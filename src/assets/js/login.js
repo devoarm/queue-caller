@@ -1,6 +1,5 @@
 var doLogin = async function (username, password) {
-  username = 'ntng'
-  password = 'ntng@arm55'
+
   if (username && password) {
     Swal.fire({
       title: 'กรุณารอซักครู่...',
@@ -38,7 +37,7 @@ var doLogin = async function (username, password) {
 
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('servicePoints', JSON.stringify(data.servicePoints));
-
+            // console.log(decoded)
             sessionStorage.setItem('NOTIFY_PASSWORD', decoded.NOTIFY_PASSWORD);
             sessionStorage.setItem('NOTIFY_PORT', decoded.NOTIFY_PORT);
             sessionStorage.setItem('NOTIFY_SERVER', decoded.NOTIFY_SERVER);
